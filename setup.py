@@ -6,9 +6,14 @@ from setuptools import (
     find_packages,
     )
 
+_here = os.path.dirname(os.path.abspath(__file__))
+
+
+def here(path):
+    return os.path.join(_here, path)
 
 src = 'src'
-install_requires = [line.strip() for line in open('requirements.txt', 'rt')]
+install_requires = [line.strip() for line in open(here('requirements.txt'), 'rt')]
 test_require = []
 packages = find_packages(src)
 package_dir = {'': src}
