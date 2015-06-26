@@ -21,12 +21,22 @@ class VisualRecognition(Bluemix):
     def labels(self):
         pass
 
-    def recognize(self, *images):
+    def recognize(self, *images, labels=[], label_groups=[]):
         url = 'https://gateway.watsonplatform.net/visual-recognition-beta/api/v1/tag/recognize'
         auth_token = self._credentials['username'], self._credentials['password']
+        labels_to_check = {
+            'labels': labels,
+            'label_groups': label_groups,
+        }
+        payload = {
+            'labels_to_check': labels_to_check,
+        }
         files = dict((os.path.basename(image), (os.path.basename(image), open(image, 'rb'))) for image in images)
-        res = requests.post(url, auth=auth_token, files=files)
+        res = requests.post(url, params=payload, auth=auth_token, files=files)
         if res.status_code != requests.codes.ok:
             raise APIError('status code={}, reason={}'.format(res.status_code, res.reason))
         data = json.loads(res.text)
-        return data['images']
+        try:
+            return data['images']
+        except KeyError:
+            raise APIError('Illigal response: {}'.format(res.text))
