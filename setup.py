@@ -7,15 +7,8 @@ from setuptools import (
     )
 
 
-def find_package_data(target, package_root):
-    return [
-        os.path.relpath(os.path.join(root, filename), package_root)
-        for root, dirs, files in os.walk(target)
-        for filename in files
-        ]
-
 src = 'src'
-install_requires = []
+install_requires = [line.strip() for line in open('requirements.txt', 'rt')]
 test_require = []
 packages = find_packages(src)
 package_dir = {'': src}
